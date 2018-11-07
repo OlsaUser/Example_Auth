@@ -1,86 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>
-            Authentication
-        </title>
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<head>
+	<meta name="description" content="Bill Pay Login">
+	<meta name="viewport" content="width=device-width">
+	<title>Bill Pay Login</title>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+<style>
+	body {
+	  padding: 0px;
+	  margin:5px;
+	  font-family: 'Helvetica Neue', Helvetica, Verdana, sans-serif;
+	  font-size: 10pt;
+	  background-color: white;
+	}
+	#title {
+		padding-top: 5px;
+		padding-bottom: 5px;
+		color: blue;
+		font-size: 14pt;
+	}
+	#header {
+		background-color: #E0E0E0;
+		height: 30px;
+		text-align: center;
+	}
+	.txtfield { 
+	  display: block;
+	  width: 95%;
+	  max-width: 400px;
+	  padding: 5px;
 
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <h3 class="text-center">Authentication</h3>
-        <div class="container">
-            <form>
-                <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Password">
-                </div>
-                <button type="button" class="btn btn-primary center-block" onclick="auth()">Submit</button>
-            </form>
-            <div id="token-display">
-            </div>
-        </div>
-        </br>
-        </br>
-        <div class="container">
-            <form>
-                <div class="form-group">
-                    <label for="token">Token</label>
-                    <input  type="text" class="form-control" id="token" placeholder="token" ></input>
-                </div>
-                <button type="button" class="btn btn-primary center-block" onclick="getlist()">Get List</button>
-            </form>
-            <div id="list">
-            </div>
-        </div>
-        <script type="text/javascript">
-            auth= function(){
-                var xhttp = new XMLHttpRequest();
-                data={name:document.getElementById("username").value,password:document.getElementById("password").value}
-                xhttp.onreadystatechange = function() {
-                    if (xhttp.readyState==4 && xhttp.status==200) {
-                        var response = JSON.parse(xhttp.responseText);
-                        document.getElementById("token-display").innerHTML = response.token;
-                    }
-                    if(xhttp.readyState==4 && xhttp.status==403){
-                      document.getElementById("token-display").innerHTML=JSON.parse(xhttp.responseText).message;
-                    }
-                };
-                xhttp.open("POST", "http://localhost:3000/login", true);
-                xhttp.setRequestHeader("Content-type", 'application/json; charset=UTF-8');
-                xhttp.send(JSON.stringify(data));
-            }
-            getlist= function(){
-                var xhttp = new XMLHttpRequest();
-               data={token:document.getElementById("token").value}
-                xhttp.onreadystatechange = function() {
-                    if (xhttp.readyState==4 && xhttp.status==200) {
-                        var response = JSON.parse(xhttp.responseText);
-                        var ul=document.createElement("ul");
-                        for(var i=0;i<response.users.length;i++){
-                            var li=document.createElement("li");
-                            li.appendChild(document.createTextNode(response.users[i].name));
-                            ul.appendChild(li);
-                        }
-                        document.getElementById("list").appendChild(ul);
-                    }
-                    if(xhttp.readyState==4 && xhttp.status==403){
-                      document.getElementById("list").innerHTML=JSON.parse(xhttp.responseText).message;
-                    }
-                };
-                xhttp.open("POST", "http://localhost:3000/getusers", true);
-                xhttp.setRequestHeader("Content-type", 'application/json; charset=UTF-8');
-                xhttp.send(JSON.stringify(data));
-            }
-        </script>
-    </body>
+	  margin-bottom: 15px;
+	  color: #7988a3;
+	  font-size: 1em;
+	  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+	  background-color: #fff;
+	  background-image: -webkit-gradient(linear, left top, left bottom, from(#edf3f9), to(#fff));
+	  background-image: -webkit-linear-gradient(top, #edf3f9, #fff);
+	  background-image: -moz-linear-gradient(top, #edf3f9, #fff);
+	  background-image: -ms-linear-gradient(top, #edf3f9, #fff);
+	  background-image: -o-linear-gradient(top, #edf3f9, #fff);
+	  background-image: linear-gradient(top, #edf3f9, #fff);
+	  border: 1px solid;
+	  border-color: #abbce8 #c3cae0 #b9c8ef;
+	  -webkit-border-radius: 4px;
+	  -moz-border-radius: 4px;
+	  border-radius: 4px;
+	  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.4);
+	  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.4);
+	  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.4);
+	  -webkit-transition: all 0.25s linear;
+	  -moz-transition: all 0.25s linear;
+	  transition: all 0.25s linear;
+	}
+
+	.txtfield:focus {
+	  outline: none;
+	  color: #525864;
+	  border-color: #84c0ee;
+	  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 7px #96c7ec;
+	  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 7px #96c7ec;
+	  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 7px #96c7ec;
+	}
+	.loginBTN {
+	  width: 98%;
+	  max-width: 400px;
+	  padding: 5px;
+	  margin-bottom: 15px;
+	}
+	</style>
+
+<script>
+	function getParameterByName(name) {
+    	var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    	return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+	}
+
+	function doRedirect(authCode) {
+		var uri = decodeURIComponent(getParameterByName("redirect_uri"));
+		window.location.replace("/authorize?redirect_uri=" + encodeURI(uri + "&authorization_code=" + authCode));
+	};
+
+	function getSaml() {
+		var body = {
+	    	"authUsername": document.getElementById("username").value,
+		    "authPassword": document.getElementById("password").value,
+    		"applicationId": "5bd95e11d5d6c31e5120bd28" //getParameterByName("app")
+    	}
+    	
+	    var xmlhttp = new XMLHttpRequest();
+	    var url = getParameterByName("instance") + "/personaWeb/user/getApplicationAuthentication";
+
+	    xmlhttp.onreadystatechange = function () {
+	        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+	            if (xmlhttp.status === 200) {
+	                var response = JSON.parse(xmlhttp.responseText);
+	                if (response.getApplicationAuthenticationResponse.responseCode === "OK") {
+	                	doRedirect(response.getApplicationAuthenticationResponse.data.saml);
+	                } 
+	                else {
+	                	alert("We are having trouble with the authentication process.\n" + 
+	                	response.getApplicationAuthenticationResponse.responseCode + ":" + 
+	                	response.getApplicationAuthenticationResponse.responseMessage);
+	       
+	                }
+	            } else {
+	                alert("We are having trouble with the authentication process.\n" + xmlhttp.status + ":" + xmlhttp.statusText, xmlhttp);
+	            }
+	        }
+	    };
+
+	    xmlhttp.open("POST", "/proxy?redirect_uri=" + encodeURI(url), true);
+	    xmlhttp.setRequestHeader("Content-type", "application/json");
+	    xmlhttp.send(JSON.stringify(body));
+
+	}
+</script>
+</head>
+
+<body>
+	<div class="header">
+		<p>Login with your Bill Pay User ID and Password. Our use of this information will be subject to our Privacy Statement. Your user ID and Password will not be shared with FaceBook.</p>
+
+		<input id="username" name="username" class="txtfield" tabindex="1" placeHolder="User ID"/>
+		<br/>
+		<input id="password" type='password' name="password" class="txtfield" tabindex="2" placeHolder="Password"/>
+		<br/>
+		<input id="gobtn" type='button' class="loginBTN" value='Login' onclick="getSaml();" tabindex="3"/>
+	</div>
+</body>
 </html>
