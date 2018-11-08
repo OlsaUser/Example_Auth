@@ -55,6 +55,16 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
  
 <script>
+function getParameterByName(name) {
+        var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
+ 
+    function doRedirect(authCode) {
+        var uri = decodeURIComponent(getParameterByName("redirect_uri"));
+        window.location.replace("https://converse-qa-iad.ces.pitneycloud.com/authorize?redirect_uri=" + encodeURI(uri + "&authorization_code=" + authCode));
+    };
+    
 // jQuery codes
 $(document).ready(function(){
     // show sign up / registration form
@@ -142,6 +152,7 @@ $.ajax({
 
         // store jwt to local storage
         localStorage.setItem("jwt", result.jwt);
+        doRedirect(result.jwt);
  
         // show home page & tell the user it was a successful login
         showHomePage();
